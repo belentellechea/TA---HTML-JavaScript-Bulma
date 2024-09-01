@@ -1,0 +1,100 @@
+body {
+    background-color: #d3ddff;
+    margin: 0;
+    padding: 15px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Georgia";
+}
+
+.flex-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px; 
+}
+
+.flex-box .title {
+    color: #669bbc;
+}
+
+.add-task-button {
+    background: white;
+    padding: 8px;
+    border-radius: 10%;
+}
+
+.navbar .container .navbar-menu .navbar-start .is-active {
+    background-color: #669bbc;
+}
+
+/* Estilo base del modal para que ocupe toda la pantalla */
+.modal {
+    display: none; /* Cambia a block cuando el modal debe mostrarse */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para el área fuera del modal */
+}
+
+.modal-content {
+    background-color: white; /* Fondo blanco */
+    margin: 10% auto; /* Centra el modal verticalmente */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Cambia el tamaño aquí según lo necesites (80% de ancho de la pantalla) */
+    max-width: 700px; /* Establece un ancho máximo para el modal */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Sombra alrededor del modal */
+}
+
+
+.modal h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 800;
+    
+
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal form label {
+    margin-bottom: 10px;
+}
+
+.modal form input {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+} 
+
+.modal-buttons {
+    display: flex;
+    justify-content: center; 
+    gap: 20px; 
+}
+
+.modal-buttons button {
+    background-color:#669bbc;
+    padding: 10px; 
+    border-radius: 15%;
+}
+
+.modal-content h2 {
+    display: flex;
+    justify-content: center;
+}
+
+.modal-content form .columns .column .box {
+    background-color: #d3ddff ;
+}

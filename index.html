@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trello</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    >
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item">
+                    <img src="https://litecnotura1amitadxx.wordpress.com/wp-content/uploads/2018/02/trello-logo-blue-flat.png" alt="Logo" />
+                </a>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item"> Workspaces </a>
+                    <a class="navbar-item"> Recent </a>
+                    <a class="navbar-item"> Starred </a>
+                    <a class="navbar-item"> Templates </a>
+                    <a class="navbar-item is-active"> Create </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="flex-box">
+        <h1 class="title">Gestor de tareas</h1>
+        <button class="add-task-button">+ Agregar tarea</button>
+    </div>
+    <div id="task-modal" class="modal"></div>
+    <div class="columns is-mobile custom-column">
+        <div class="column is-one-fifth column-backlog">
+            <div class="box Backlog">Backlog
+            </div>
+        </div>
+        <div class="column is-one-fifth">
+            <div class = "box To_Do">To do
+            </div>
+        </div>
+        <div class="column is-one-fifth">
+            <div class="box In_Progress">In progress
+            </div>
+        </div>
+        <div class="column is-one-fifth">
+            <div class="box Blocked">Blocked
+            </div>
+        </div>
+        <div class="column is-one-fifth">
+            <div class="box Done">Done
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
