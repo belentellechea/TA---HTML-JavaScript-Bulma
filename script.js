@@ -159,6 +159,7 @@ function openEditModal(card) {
                 <div class="modal-buttons">
                     <button type="button" id="cancel-button">Cancelar</button>
                     <button type="submit" id="save-button">Guardar cambios</button>
+                    <button id="clear-button">Eliminar tarea</button>
                 </div>
             </form>
         </div>
@@ -175,6 +176,13 @@ function openEditModal(card) {
         event.preventDefault();
         saveCardChanges(card.id);
         modal.style.display = "none"; // Cerrar modal después de guardar cambios
+    });
+
+    const clearTasksButton = document.getElementById("clear-button");
+    clearTasksButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        deleteCardHandler(card.id);
+        modal.style.display = "none"; 
     });
 }
 
@@ -197,7 +205,7 @@ function saveCardChanges(cardId) {
     createCardComponent(cards[cardIndex]);
 }
 
-function createCardComponent(card){
+function createCardComponent(card) {
     const cardComponent = document.createElement("div");
     cardComponent.id = `card-${card.id}`;
     cardComponent.classList.add("card");
@@ -216,8 +224,8 @@ function createCardComponent(card){
 
     const statusColumn = document.querySelector(`.${card.status.replace(/ /g, '_')}`);
     statusColumn.appendChild(cardComponent);
-
 }
+
 
 function loadCards(cards){
     cards.forEach((element) => {
@@ -240,5 +248,37 @@ function addCardHandler(){
     cards.push(newCard)
 
 }
+
+function deleteCardHandler(cardId){
+    // Eliminar la tarjeta del array
+    cards = cards.filter(cardElement => cardElement.id !== cardId);
+    
+    // Eliminar la tarjeta del DOM
+    const cardElement = document.getElementById(`card-${cardId}`);
+    if (cardElement) {
+        cardElement.remove();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar el drag and drop para cada columna
+    const columns = document.querySelectorAll('.column');
+
+    columns.forEach(column => {
+        const sortable = Sortable.create(column.querySelector('.box'), {
+            group: 'shared', // Permitir arrastrar entre columnas
+            animation: 150,  // Velocidad de la animación
+            onEnd: function (evt) {
+                const cardId = parseInt(evt.item.id.split('-')[1], 10);
+                const newStatus = evt.to.classList[1]; // Clase de la nueva columna
+
+                // Actualizar el estado de la tarjeta en la lista `cards`
+                const card = cards.find(card => card.id === cardId);
+                card.status = newStatus.replace(/_/g, ' ');
+            }
+        });
+    });
+});
+
 
 loadCards(cards); 

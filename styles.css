@@ -8,6 +8,10 @@ body {
     font-family: "Georgia";
 }
 
+.title.is-5 {
+    position: sticky;
+}
+
 .flex-box {
     display: flex;
     justify-content: space-between;
@@ -27,6 +31,8 @@ body {
 .navbar .container .navbar-menu .navbar-start .is-active {
     background-color: #669bbc;
 }
+
+
 
 /* Estilo base del modal para que ocupe toda la pantalla */
 .modal {
@@ -97,4 +103,42 @@ body {
 
 .modal-content form .columns .column .box {
     background-color: #d3ddff ;
+}
+
+/* Estilo para pantallas de 1440px */
+@media screen and (min-width: 1440px) {
+    .columns.is-mobile.custom-column {
+        flex-wrap: nowrap;
+    }
+}
+
+/* Estilo para pantallas de 768px */
+@media screen and (max-width: 768px) {
+    .columns.is-mobile.custom-column {
+        flex-wrap: wrap; /* Envolver columnas */
+        overflow-x: hidden; /* Sin scroll horizontal */
+    }
+    .column {
+        flex-basis: 50%; /* Ajustar el ancho de las columnas */
+    }
+}
+
+/* Estilo para pantallas de 425px */
+@media screen and (max-width: 425px) {
+    .columns.is-mobile.custom-column {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scroll vertical en pantalla */
+    }
+    
+    .add-task-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    
+    .column {
+        flex-basis: 100%; /* Columnas a 100% de ancho */
+    }
 }
