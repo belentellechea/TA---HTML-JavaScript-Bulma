@@ -8,10 +8,6 @@ body {
     font-family: "Georgia";
 }
 
-.title.is-5 {
-    position: sticky;
-}
-
 .flex-box {
     display: flex;
     justify-content: space-between;
@@ -32,11 +28,8 @@ body {
     background-color: #669bbc;
 }
 
-
-
-/* Estilo base del modal para que ocupe toda la pantalla */
 .modal {
-    display: none; /* Cambia a block cuando el modal debe mostrarse */
+    display: none; 
     position: fixed;
     z-index: 1;
     left: 0;
@@ -44,20 +37,17 @@ body {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para el área fuera del modal */
+    background-color: rgba(0, 0, 0, 0.5); /*fondo semitransparente*/
 }
 
 .modal-content {
-    background-color: white; /* Fondo blanco */
-    margin: 10% auto; /* Centra el modal verticalmente */
+    background-color: white; 
+    margin: 10% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Cambia el tamaño aquí según lo necesites (80% de ancho de la pantalla) */
-    max-width: 700px; /* Establece un ancho máximo para el modal */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Sombra alrededor del modal */
+    width: 80%; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); 
 }
-
 
 .modal h2 {
     margin-bottom: 20px;
@@ -115,11 +105,11 @@ body {
 /* Estilo para pantallas de 768px */
 @media screen and (max-width: 768px) {
     .columns.is-mobile.custom-column {
-        flex-wrap: wrap; /* Envolver columnas */
-        overflow-x: hidden; /* Sin scroll horizontal */
+        flex-wrap: wrap; 
+        overflow-x: hidden; 
     }
     .column {
-        flex-basis: 50%; /* Ajustar el ancho de las columnas */
+        flex-basis: 50%; 
     }
 }
 
@@ -129,16 +119,30 @@ body {
         flex-direction: column;
         flex-wrap: nowrap;
         overflow-x: hidden;
-        overflow-y: auto; /* Scroll vertical en pantalla */
+        overflow-y: auto; 
     }
-    
     .add-task-button {
         position: absolute;
         top: 10px;
         right: 10px;
     }
-    
     .column {
-        flex-basis: 100%; /* Columnas a 100% de ancho */
+        flex-basis: 100%; 
     }
 }
+
+/* ----------------------------- TA 1 - UT3 --------------------------------- */
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
