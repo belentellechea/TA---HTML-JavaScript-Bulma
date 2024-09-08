@@ -1,17 +1,25 @@
 
-let cards = [
-    {
-        id: 0,
-        title: "Terminar TA desarrollo web",
-        description: "Crear gestor de tareas web",
-        assigned: "Persona 1", 
-        priority: "Alta",
-        status: "To Do",
-        finalDate: "2024-08-01"
-    }
-]
-let currentId = cards.length
+// let cards = [
+//     {
+//         id: 0,
+//         title: "Terminar TA desarrollo web",
+//         description: "Crear gestor de tareas web",
+//         assigned: "Persona 1", 
+//         priority: "Alta",
+//         status: "To Do",
+//         finalDate: "2024-08-01"
+//     }
+// ]
+let cards = []
+//let currentId = cards.length
+//generaba error al añadir una tarea desde la pagina
+let currentId = 0
 
+const addTaskButton = document.querySelector(".add-task-button");
+addTaskButton.addEventListener("click", (event) => {
+  event.preventDefault(); // Evitar el submit default
+  openModal();
+})
 
 function openModal() {
     const modal = document.getElementById("task-modal");
@@ -87,22 +95,10 @@ function openModal() {
     addCardButton.addEventListener("submit", (event) => {
         event.preventDefault();
         addCardHandler();
-        modal.style.display = "none"; // Cerrar modal después de agregar la tarjeta
+        modal.style.display = "none"; 
     });
 
 };
-
-const addTaskButton = document.querySelector(".add-task-button");
-addTaskButton.addEventListener("click", (event) => {
-  event.preventDefault(); // Evitar el submit default
-  openModal();
-})
-
-// const editOnClick = document.querySelector(".card")
-// editOnClick.addEventListener("click", (event) => {
-//     event.preventDefault(); 
-//     openEditModal(); 
-// })
 
 function openEditModal(card) {
     const modal = document.getElementById("task-modal");
@@ -165,19 +161,20 @@ function openEditModal(card) {
         </div>
     `;
 
-    // Cerrar modal al hacer clic en el botón "Cancelar"
+    //cerrar modal al hacer click en el botón cancelar
     document.getElementById("cancel-button").onclick = function() {
         modal.style.display = "none";
     };
 
-    // Guardar cambios al hacer clic en el botón "Guardar cambios"
+    //guardar cambios al hacer click en el botón guardar
     const saveButton = document.getElementById("editTaskForm");
     saveButton.addEventListener("submit", (event) => {
         event.preventDefault();
         saveCardChanges(card.id);
-        modal.style.display = "none"; // Cerrar modal después de guardar cambios
+        modal.style.display = "none"; 
     });
 
+    //eliminar la tarea al hacer click en el botón eliminar tarea
     const clearTasksButton = document.getElementById("clear-button");
     clearTasksButton.addEventListener("click", (event) => {
         event.preventDefault();
@@ -234,8 +231,9 @@ function loadCards(cards){
 }
 
 function addCardHandler(){
+    const maxId = cards.length > 0 ? Math.max(...cards.map(card => card.id)) : 0; 
     const newCard = {
-        id: currentId++,
+        id: maxId + 1,
         title: document.getElementById("titleInput").value,
         description: document.getElementById("descriptionInput").value, 
         assigned: document.getElementById("assignedInput").value,
@@ -247,19 +245,24 @@ function addCardHandler(){
     createCardComponent(newCard)
     cards.push(newCard)
 
+    createTaskFrom_db(newCard)
 }
 
 function deleteCardHandler(cardId){
-    // Eliminar la tarjeta del array
+    //eliminar la tarjeta del array
     cards = cards.filter(cardElement => cardElement.id !== cardId);
     
-    // Eliminar la tarjeta del DOM
+    //eliminar la tarjeta del DOM
     const cardElement = document.getElementById(`card-${cardId}`);
     if (cardElement) {
         cardElement.remove();
     }
+
+    deleteTaskFrom_db(cardId); 
 }
 
+
+//funcion drag and drop hecha con el chat :) 
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar el drag and drop para cada columna
     const columns = document.querySelectorAll('.column');
@@ -281,4 +284,55 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-loadCards(cards); 
+
+
+// ----------------------------- TA 1 - UT3 ---------------------------------
+const url = `http://localhost:3000/cards`;
+
+async function fetchDataAW() {
+    try {
+        const response = await fetch(url, { method: "GET" });
+        const data = await response.json(); // extract JSON from response
+        return data; 
+    } catch (error) {
+        console.log("Error fetching data: ", error);
+    }
+}
+  
+fetchDataAW().then((tasksResponse) => {
+    tasksResponse.forEach((taskResponse) => {
+        taskResponse.id = parseInt(taskResponse.id, 10); 
+        // si no hacía esto los id se me convertían a string 
+        // en el json y no me funcionaba nada :) 
+        cards.push(taskResponse); 
+    });
+    loadCards(cards); 
+})
+
+async function createTaskFrom_db(newTask) {
+    try {
+        const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTask),
+        });
+        const data = await response.json();
+
+    } catch (error) {
+        console.log("Error fetching data: ", error);
+    }
+}
+
+async function deleteTaskFrom_db(taskId) {
+    try {
+        const response = await fetch (`http://localhost:3000/cards/${taskId}`, {
+            method: "DELETE", 
+            headers: { "Content-Type": "application/json" }
+        });
+        
+    } catch (error) {
+        console.log("Error eliminando la tarea: ", error); 
+    }
+}
+
+
