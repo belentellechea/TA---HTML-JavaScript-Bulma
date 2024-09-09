@@ -11,13 +11,10 @@
 //     }
 // ]
 let cards = []
-//let currentId = cards.length
-//generaba error al añadir una tarea desde la pagina
-let currentId = 0
 
 const addTaskButton = document.querySelector(".add-task-button");
 addTaskButton.addEventListener("click", (event) => {
-  event.preventDefault(); // Evitar el submit default
+  event.preventDefault(); 
   openModal();
 })
 
@@ -126,8 +123,8 @@ function openEditModal(card) {
                             <label for="status">Estado</label>
                             <select name="estado" id="statusInput">
                                 <option ${card.status === "Backlog" ? "selected" : ""}>Backlog</option>
-                                <option ${card.status === "To Do" ? "selected" : ""}>To Do</option>
-                                <option ${card.status === "In Progress" ? "selected" : ""}>In Progress</option>
+                                <option ${card.status === "To do" ? "selected" : ""}>To do</option>
+                                <option ${card.status === "In progress" ? "selected" : ""}>In progress</option>
                                 <option ${card.status === "Blocked" ? "selected" : ""}>Blocked</option>
                                 <option ${card.status === "Done" ? "selected" : ""}>Done</option>
                             </select>
@@ -186,25 +183,24 @@ function openEditModal(card) {
 function saveCardChanges(cardId) {
     const cardIndex = cards.findIndex(card => card.id === cardId);
     
-    // Actualizar los valores de la tarjeta con los valores del formulario
     cards[cardIndex].title = document.getElementById("titleInput").value;
     cards[cardIndex].description = document.getElementById("descriptionInput").value;
     cards[cardIndex].assigned = document.getElementById("assignedInput").value;
     cards[cardIndex].priority = document.getElementById("priorityInput").value;
-    cards[cardIndex].status = document.getElementById("statusInput").value.replace(/ /g, '_');
+    cards[cardIndex].status = document.getElementById("statusInput").value;
     cards[cardIndex].finalDate = document.getElementById("due-date").value;
 
-    // Eliminar la tarjeta antigua de la columna actual
+    editTaskFrom_db(cards[cardIndex]);
+
     const oldCardElement = document.getElementById(`card-${cardId}`);
     oldCardElement.parentNode.removeChild(oldCardElement);
 
-    // Crear y agregar la tarjeta actualizada en la nueva columna
     createCardComponent(cards[cardIndex]);
 }
 
 function createCardComponent(card) {
     const cardComponent = document.createElement("div");
-    cardComponent.id = `card-${card.id}`;
+    cardComponent.setAttribute("data-id", card.id);
     cardComponent.classList.add("card");
     cardComponent.innerHTML = `
         <div class="card-header">
@@ -219,7 +215,7 @@ function createCardComponent(card) {
     `;
     cardComponent.addEventListener("click", () => openEditModal(card));
 
-    const statusColumn = document.querySelector(`.${card.status.replace(/ /g, '_')}`);
+    const statusColumn = document.getElementById(card.status); 
     statusColumn.appendChild(cardComponent);
 }
 
@@ -231,14 +227,14 @@ function loadCards(cards){
 }
 
 function addCardHandler(){
-    const maxId = cards.length > 0 ? Math.max(...cards.map(card => card.id)) : 0; 
+    // const maxId = cards.length > 0 ? Math.max(...cards.map(card => card.id)) : 0; 
     const newCard = {
-        id: maxId + 1,
+        // id: maxId + 1,
         title: document.getElementById("titleInput").value,
         description: document.getElementById("descriptionInput").value, 
         assigned: document.getElementById("assignedInput").value,
         priority: document.getElementById("priorityInput").value,
-        status: document.getElementById("statusInput").value.replace(/ /g, '_'),
+        status: document.getElementById("statusInput").value,
         finalDate: document.getElementById("due-date").value
     }
 
@@ -264,7 +260,6 @@ function deleteCardHandler(cardId){
 
 //funcion drag and drop hecha con el chat :) 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar el drag and drop para cada columna
     const columns = document.querySelectorAll('.column');
 
     columns.forEach(column => {
@@ -272,18 +267,23 @@ document.addEventListener('DOMContentLoaded', () => {
             group: 'shared', // Permitir arrastrar entre columnas
             animation: 150,  // Velocidad de la animación
             onEnd: function (evt) {
-                const cardId = parseInt(evt.item.id.split('-')[1], 10);
-                const newStatus = evt.to.classList[1]; // Clase de la nueva columna
+                const cardId = evt.item.getAttribute('data-id'); // Obtener el ID alfanumérico
+                const newStatus = evt.to.id; // Obtener el id de la nueva columna
 
-                // Actualizar el estado de la tarjeta en la lista `cards`
+                // Actualizar el estado de la tarjeta en la lista cards
                 const card = cards.find(card => card.id === cardId);
-                card.status = newStatus.replace(/_/g, ' ');
+                if (card) {
+                    card.status = newStatus;
+
+                    // Llamar a la función para actualizar el backend
+                    editTaskFrom_db(card);
+                } else {
+                    console.error(`No se encontró la tarjeta con id: ${cardId}`);
+                }
             }
         });
     });
 });
-
-
 
 
 // ----------------------------- TA 1 - UT3 ---------------------------------
@@ -298,12 +298,9 @@ async function fetchDataAW() {
         console.log("Error fetching data: ", error);
     }
 }
-  
+
 fetchDataAW().then((tasksResponse) => {
     tasksResponse.forEach((taskResponse) => {
-        taskResponse.id = parseInt(taskResponse.id, 10); 
-        // si no hacía esto los id se me convertían a string 
-        // en el json y no me funcionaba nada :) 
         cards.push(taskResponse); 
     });
     loadCards(cards); 
@@ -334,5 +331,19 @@ async function deleteTaskFrom_db(taskId) {
         console.log("Error eliminando la tarea: ", error); 
     }
 }
+
+async function editTaskFrom_db(task){
+    try {
+        const response = await fetch (`http://localhost:3000/cards/${task.id}`, {
+            method: "PUT", 
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(task), 
+        });
+        
+    } catch (error) {
+        console.log("Error editando la tarea: ", error); 
+    }
+}
+
 
 
