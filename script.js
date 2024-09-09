@@ -123,8 +123,8 @@ function openEditModal(card) {
                             <label for="status">Estado</label>
                             <select name="estado" id="statusInput">
                                 <option ${card.status === "Backlog" ? "selected" : ""}>Backlog</option>
-                                <option ${card.status === "To Do" ? "selected" : ""}>To Do</option>
-                                <option ${card.status === "In Progress" ? "selected" : ""}>In Progress</option>
+                                <option ${card.status === "To do" ? "selected" : ""}>To do</option>
+                                <option ${card.status === "In progress" ? "selected" : ""}>In progress</option>
                                 <option ${card.status === "Blocked" ? "selected" : ""}>Blocked</option>
                                 <option ${card.status === "Done" ? "selected" : ""}>Done</option>
                             </select>
@@ -187,7 +187,7 @@ function saveCardChanges(cardId) {
     cards[cardIndex].description = document.getElementById("descriptionInput").value;
     cards[cardIndex].assigned = document.getElementById("assignedInput").value;
     cards[cardIndex].priority = document.getElementById("priorityInput").value;
-    cards[cardIndex].status = document.getElementById("statusInput").value.replace(/ /g, '_');
+    cards[cardIndex].status = document.getElementById("statusInput").value;
     cards[cardIndex].finalDate = document.getElementById("due-date").value;
 
     editTaskFrom_db(cards[cardIndex]);
@@ -215,7 +215,7 @@ function createCardComponent(card) {
     `;
     cardComponent.addEventListener("click", () => openEditModal(card));
 
-    const statusColumn = document.querySelector(`.${card.status.replace(/ /g, '_')}`);
+    const statusColumn = document.getElementById(card.status); 
     statusColumn.appendChild(cardComponent);
 }
 
@@ -234,7 +234,7 @@ function addCardHandler(){
         description: document.getElementById("descriptionInput").value, 
         assigned: document.getElementById("assignedInput").value,
         priority: document.getElementById("priorityInput").value,
-        status: document.getElementById("statusInput").value.replace(/ /g, '_'),
+        status: document.getElementById("statusInput").value,
         finalDate: document.getElementById("due-date").value
     }
 
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Actualizar el estado de la tarjeta en la lista cards
                 const card = cards.find(card => card.id === cardId);
-                card.status = newStatus.replace(/_/g, ' ');
+                card.status = newStatus;
                 editTaskFrom_db(card); // Actualizar la base de datos
             }
         });
