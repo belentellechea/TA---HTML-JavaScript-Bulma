@@ -268,16 +268,23 @@ document.addEventListener('DOMContentLoaded', () => {
             animation: 150,  // Velocidad de la animación
             onEnd: function (evt) {
                 const cardId = evt.item.getAttribute('data-id'); // Obtener el ID alfanumérico
-                const newStatus = evt.to.classList[1]; // Clase de la nueva columna
+                const newStatus = evt.to.id; // Obtener el id de la nueva columna
 
                 // Actualizar el estado de la tarjeta en la lista cards
                 const card = cards.find(card => card.id === cardId);
-                card.status = newStatus;
-                editTaskFrom_db(card); // Actualizar la base de datos
+                if (card) {
+                    card.status = newStatus;
+
+                    // Llamar a la función para actualizar el backend
+                    editTaskFrom_db(card);
+                } else {
+                    console.error(`No se encontró la tarjeta con id: ${cardId}`);
+                }
             }
         });
     });
 });
+
 
 // ----------------------------- TA 1 - UT3 ---------------------------------
 const url = `http://localhost:3000/cards`;

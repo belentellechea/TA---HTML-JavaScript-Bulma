@@ -1,12 +1,3 @@
 {
-  "cards": [
-    {
-      "id": "f80b",
-      "title": "",
-      "description": "",
-      "assigned": "Persona 1",
-      "priority": "Alta",
-      "finalDate": ""
-    }
-  ]
+  "cards": []
 }
