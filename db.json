@@ -1,22 +1,13 @@
 {
   "cards": [
     {
-      "id": 0,
-      "title": "Terminar TA desarrollo web",
-      "description": "Crear gestor de tareas web",
+      "id": "949f",
+      "title": "",
+      "description": "",
       "assigned": "Persona 1",
       "priority": "Alta",
       "status": "To Do",
-      "finalDate": "2024-08-01"
-    },
-    {
-      "id": 1,
-      "title": "pasear al perro ",
-      "description": "ppp",
-      "assigned": "Persona 1",
-      "priority": "Alta",
-      "status": "Backlog",
-      "finalDate": "2024-09-25"
+      "finalDate": ""
     }
   ]
 }

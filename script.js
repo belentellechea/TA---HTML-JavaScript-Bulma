@@ -11,9 +11,6 @@
 //     }
 // ]
 let cards = []
-//let currentId = cards.length
-//generaba error al añadir una tarea desde la pagina
-let currentId = 0
 
 const addTaskButton = document.querySelector(".add-task-button");
 addTaskButton.addEventListener("click", (event) => {
@@ -194,6 +191,8 @@ function saveCardChanges(cardId) {
     cards[cardIndex].status = document.getElementById("statusInput").value.replace(/ /g, '_');
     cards[cardIndex].finalDate = document.getElementById("due-date").value;
 
+    editTaskFrom_db(cards[cardIndex]);
+
     // Eliminar la tarjeta antigua de la columna actual
     const oldCardElement = document.getElementById(`card-${cardId}`);
     oldCardElement.parentNode.removeChild(oldCardElement);
@@ -204,7 +203,7 @@ function saveCardChanges(cardId) {
 
 function createCardComponent(card) {
     const cardComponent = document.createElement("div");
-    cardComponent.id = `card-${card.id}`;
+    cardComponent.setAttribute("data-id", card.id);
     cardComponent.classList.add("card");
     cardComponent.innerHTML = `
         <div class="card-header">
@@ -219,7 +218,7 @@ function createCardComponent(card) {
     `;
     cardComponent.addEventListener("click", () => openEditModal(card));
 
-    const statusColumn = document.querySelector(`.${card.status.replace(/ /g, '_')}`);
+    const statusColumn = document.querySelector(`.${card.status}`);
     statusColumn.appendChild(cardComponent);
 }
 
@@ -231,9 +230,9 @@ function loadCards(cards){
 }
 
 function addCardHandler(){
-    const maxId = cards.length > 0 ? Math.max(...cards.map(card => card.id)) : 0; 
+    // const maxId = cards.length > 0 ? Math.max(...cards.map(card => card.id)) : 0; 
     const newCard = {
-        id: maxId + 1,
+        // id: maxId + 1,
         title: document.getElementById("titleInput").value,
         description: document.getElementById("descriptionInput").value, 
         assigned: document.getElementById("assignedInput").value,
@@ -264,7 +263,6 @@ function deleteCardHandler(cardId){
 
 //funcion drag and drop hecha con el chat :) 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar el drag and drop para cada columna
     const columns = document.querySelectorAll('.column');
 
     columns.forEach(column => {
@@ -272,19 +270,17 @@ document.addEventListener('DOMContentLoaded', () => {
             group: 'shared', // Permitir arrastrar entre columnas
             animation: 150,  // Velocidad de la animación
             onEnd: function (evt) {
-                const cardId = parseInt(evt.item.id.split('-')[1], 10);
+                const cardId = evt.item.getAttribute('data-id'); // Obtener el ID alfanumérico
                 const newStatus = evt.to.classList[1]; // Clase de la nueva columna
 
-                // Actualizar el estado de la tarjeta en la lista `cards`
+                // Actualizar el estado de la tarjeta en la lista cards
                 const card = cards.find(card => card.id === cardId);
                 card.status = newStatus.replace(/_/g, ' ');
+                editTaskFrom_db(card); // Actualizar la base de datos
             }
         });
     });
 });
-
-
-
 
 // ----------------------------- TA 1 - UT3 ---------------------------------
 const url = `http://localhost:3000/cards`;
@@ -298,12 +294,9 @@ async function fetchDataAW() {
         console.log("Error fetching data: ", error);
     }
 }
-  
+
 fetchDataAW().then((tasksResponse) => {
     tasksResponse.forEach((taskResponse) => {
-        taskResponse.id = parseInt(taskResponse.id, 10); 
-        // si no hacía esto los id se me convertían a string 
-        // en el json y no me funcionaba nada :) 
         cards.push(taskResponse); 
     });
     loadCards(cards); 
@@ -334,5 +327,19 @@ async function deleteTaskFrom_db(taskId) {
         console.log("Error eliminando la tarea: ", error); 
     }
 }
+
+async function editTaskFrom_db(task){
+    try {
+        const response = await fetch (`http://localhost:3000/cards/${task.id}`, {
+            method: "PUT", 
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(task), 
+        });
+        
+    } catch (error) {
+        console.log("Error editando la tarea: ", error); 
+    }
+}
+
 
 
