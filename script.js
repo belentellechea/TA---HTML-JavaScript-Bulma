@@ -14,7 +14,7 @@ let cards = []
 
 const addTaskButton = document.querySelector(".add-task-button");
 addTaskButton.addEventListener("click", (event) => {
-  event.preventDefault(); // Evitar el submit default
+  event.preventDefault(); 
   openModal();
 })
 
@@ -183,7 +183,6 @@ function openEditModal(card) {
 function saveCardChanges(cardId) {
     const cardIndex = cards.findIndex(card => card.id === cardId);
     
-    // Actualizar los valores de la tarjeta con los valores del formulario
     cards[cardIndex].title = document.getElementById("titleInput").value;
     cards[cardIndex].description = document.getElementById("descriptionInput").value;
     cards[cardIndex].assigned = document.getElementById("assignedInput").value;
@@ -193,11 +192,9 @@ function saveCardChanges(cardId) {
 
     editTaskFrom_db(cards[cardIndex]);
 
-    // Eliminar la tarjeta antigua de la columna actual
     const oldCardElement = document.getElementById(`card-${cardId}`);
     oldCardElement.parentNode.removeChild(oldCardElement);
 
-    // Crear y agregar la tarjeta actualizada en la nueva columna
     createCardComponent(cards[cardIndex]);
 }
 
@@ -218,7 +215,7 @@ function createCardComponent(card) {
     `;
     cardComponent.addEventListener("click", () => openEditModal(card));
 
-    const statusColumn = document.querySelector(`.${card.status}`);
+    const statusColumn = document.querySelector(`.${card.status.replace(/ /g, '_')}`);
     statusColumn.appendChild(cardComponent);
 }
 
